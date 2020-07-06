@@ -622,6 +622,7 @@ public class Catalina {
 
     /**
      * Start a new server instance.
+     * 启动组件
      */
     public void start() {
 
@@ -672,6 +673,7 @@ public class Catalina {
         }
 
         if (await) {
+            // 等待直到收到正确的关机命令，然后返回。这使主线程保持活动状态-监听HTTP连接的线程池是守护程序线程
             await();
             stop();
         }

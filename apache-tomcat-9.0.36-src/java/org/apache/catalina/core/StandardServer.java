@@ -920,6 +920,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     @Override
     protected void startInternal() throws LifecycleException {
 
+        // 发布事件给监听器 start
         fireLifecycleEvent(CONFIGURE_START_EVENT, null);
         setState(LifecycleState.STARTING);
 
@@ -928,6 +929,8 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         // Start our defined Services
         synchronized (servicesLock) {
             for (Service service : services) {
+                // Services启动
+                //  Container组件的启动
                 service.start();
             }
         }
@@ -1062,6 +1065,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         for (Service service : services) {
             // 初始化 service
             // org.apache.catalina.startup.Catalina.createStartDigester 解析server.xml时候创建的
+            // Container的初始化
             service.init();
         }
     }

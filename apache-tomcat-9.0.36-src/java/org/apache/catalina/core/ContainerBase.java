@@ -906,6 +906,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
         Container children[] = findChildren();
         List<Future<Void>> results = new ArrayList<>();
         for (Container child : children) {
+            // 线程池的方式  子类的start
             results.add(startStopExecutor.submit(new StartChild(child)));
         }
 

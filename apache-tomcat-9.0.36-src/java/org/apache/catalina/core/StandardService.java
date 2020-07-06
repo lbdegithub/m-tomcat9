@@ -416,6 +416,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         setState(LifecycleState.STARTING);
 
         // Start our defined Container first
+        //  Container的Engine组件启动
         if (engine != null) {
             synchronized (engine) {
                 engine.start();
@@ -435,6 +436,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             for (Connector connector: connectors) {
                 // If it has already failed, don't try and start it
                 if (connector.getState() != LifecycleState.FAILED) {
+                    //  connector 启动
                     connector.start();
                 }
             }
@@ -512,6 +514,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
     protected void initInternal() throws LifecycleException {
 
         super.initInternal();
+
+        //  Container组件的初始化
 
         // Engine的初始化
         if (engine != null) {

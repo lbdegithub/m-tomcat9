@@ -578,6 +578,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
         endpoint.setName(endpointName.substring(1, endpointName.length()-1));
         endpoint.setDomain(domain);
 
+        //endpoint初始化 实现TPC/IP的抽象，实现socket的功能。
         endpoint.init();
     }
 
@@ -589,6 +590,9 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             logPortOffset();
         }
 
+        // connector 启动
+
+        // Start the NIO2 endpoint, creating acceptor.
         endpoint.start();
         monitorFuture = getUtilityExecutor().scheduleWithFixedDelay(
                 new Runnable() {

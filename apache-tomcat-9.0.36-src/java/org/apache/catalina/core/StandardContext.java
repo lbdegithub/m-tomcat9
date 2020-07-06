@@ -5177,6 +5177,7 @@ public class StandardContext extends ContainerBase
             }
 
             // Start ContainerBackgroundProcessor thread
+            // LB-TODO
             super.threadStart();
         } finally {
             // Unbinding thread

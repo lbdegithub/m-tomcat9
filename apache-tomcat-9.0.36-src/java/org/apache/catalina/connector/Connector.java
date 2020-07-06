@@ -1005,7 +1005,7 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         // Initialize adapter
-        // LB-TODO
+        // LB-TODO 把tomcat request转变成servlet request 并传递给servlet
         adapter = new CoyoteAdapter(this);
         protocolHandler.setAdapter(adapter);
         if (service != null) {
@@ -1037,6 +1037,7 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         try {
+            // LB-TODO
             protocolHandler.init();
         } catch (Exception e) {
             throw new LifecycleException(

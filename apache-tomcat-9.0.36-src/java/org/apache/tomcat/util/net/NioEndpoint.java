@@ -277,6 +277,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
             pollerThread.setDaemon(true);
             pollerThread.start();
 
+            // 开始 Acceptor接受socket客户度端的连接，并把对应的socket设置到endpoint中
             startAcceptorThread();
         }
     }
