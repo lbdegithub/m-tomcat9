@@ -160,8 +160,10 @@ public final class ClassLoaderFactory {
             log.debug("Creating new class loader");
 
         // Construct the "class path" for this class loader
+        // 类加载器的类路径
         Set<URL> set = new LinkedHashSet<>();
 
+        // 按照资源的类型的，处理不同的类路径
         if (repositories != null) {
             for (Repository repository : repositories)  {
                 if (repository.getType() == RepositoryType.URL) {

@@ -1760,6 +1760,7 @@ public class Digester extends DefaultHandler2 {
 
 
     /**
+     * 将一个新对象推入对象堆栈的顶部
      * Push a new object onto the top of the object stack.
      *
      * @param object The new object

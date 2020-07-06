@@ -22,6 +22,7 @@ import java.util.EmptyStackException;
 import java.util.Stack;
 
 /**
+ * 可以使用该帮助程序类在每个线程的基础上对System.out和System.err进行复杂的重定向。每个线程都实现了一个堆栈，因此可以使用嵌套的startCapture和stopCapture
  * This helper class may be used to do sophisticated redirection of
  * System.out and System.err on a per Thread basis.
  *

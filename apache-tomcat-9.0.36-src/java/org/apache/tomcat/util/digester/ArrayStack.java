@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 
 /**
+ *
+ * 利用arraylist定义的一个栈 先进后出
  * <p>Imported copy of the <code>ArrayStack</code> class from
  * Commons Collections, which was the only direct dependency from Digester.</p>
  *

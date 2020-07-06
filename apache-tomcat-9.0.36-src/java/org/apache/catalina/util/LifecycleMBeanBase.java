@@ -154,6 +154,7 @@ public abstract class LifecycleMBeanBase extends LifecycleBase
         ObjectName on = null;
 
         try {
+            // 注册到jmx中   ----RegistryMBean
             on = new ObjectName(name.toString());
             Registry.getRegistry(null, null).registerComponent(obj, on, null);
         } catch (MalformedObjectNameException e) {

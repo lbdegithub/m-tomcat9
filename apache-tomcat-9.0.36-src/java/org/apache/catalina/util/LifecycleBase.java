@@ -132,6 +132,7 @@ public abstract class LifecycleBase implements Lifecycle {
         }
 
         try {
+            // 设置对应组件生命周期的状态
             setStateInternal(LifecycleState.INITIALIZING, null, false);
             initInternal();
             setStateInternal(LifecycleState.INITIALIZED, null, false);

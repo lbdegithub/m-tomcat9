@@ -62,6 +62,8 @@ public final class Bootstrap {
     private static final Pattern PATH_PATTERN = Pattern.compile("(\"[^\"]*\")|(([^,])*)");
 
     static {
+        // 通过系统的环境变量初始化 catalinaBaseFile
+        // 优先级：catalina.base-->当前目录的判断-->catalina.home
         // Will always be non-null
         String userDir = System.getProperty("user.dir");
 
@@ -132,7 +134,13 @@ public final class Bootstrap {
      */
     private Object catalinaDaemon = null;
 
+    /**
+     * 自定义的commonLoader（父）
+     */
     ClassLoader commonLoader = null;
+    /**
+     * tomcat容器的加载器
+     */
     ClassLoader catalinaLoader = null;
     ClassLoader sharedLoader = null;
 
@@ -142,6 +150,9 @@ public final class Bootstrap {
 
     private void initClassLoaders() {
         try {
+            // commonLoader的主要作用就是 重新利用classloader的双亲委派 和 自定义的加载机制。
+            // 由于一个容器下面可以重复部署多个web应用，commonLoader需要解决相同的类文件的重复存在问题，同时对于公用的class又需要防止重复加载。
+            // 见下面的 server和shared
             commonLoader = createClassLoader("common", null);
             if (commonLoader == null) {
                 // no config file, default to this loader - we might be in a 'single' env.
@@ -160,6 +171,7 @@ public final class Bootstrap {
     private ClassLoader createClassLoader(String name, ClassLoader parent)
         throws Exception {
 
+        // common.loader 环境变量
         String value = CatalinaProperties.getProperty(name + ".loader");
         if ((value == null) || (value.equals("")))
             return parent;
@@ -249,6 +261,7 @@ public final class Bootstrap {
      */
     public void init() throws Exception {
 
+        //init commonLoader
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -269,6 +282,7 @@ public final class Bootstrap {
         paramTypes[0] = Class.forName("java.lang.ClassLoader");
         Object paramValues[] = new Object[1];
         paramValues[0] = sharedLoader;
+        // 执行Catalina#setParentClassLoader的方法
         Method method =
             startupInstance.getClass().getMethod(methodName, paramTypes);
         method.invoke(startupInstance, paramValues);
@@ -430,16 +444,18 @@ public final class Bootstrap {
     /**
      * Main method and entry point when starting Tomcat via the provided
      * scripts.
-     *
+     * 脚本启动Tomcat时的主要方法和入口点
      * @param args Command line arguments to be processed
      */
     public static void main(String args[]) {
 
+        // 守护线程锁
         synchronized (daemonLock) {
             if (daemon == null) {
                 // Don't set daemon until init() has completed
                 Bootstrap bootstrap = new Bootstrap();
                 try {
+                    // 初始化 commonLoader 和其他加载器  并执行Catalina的setParentClassLoader把share加载器注入
                     bootstrap.init();
                 } catch (Throwable t) {
                     handleThrowable(t);
@@ -456,6 +472,7 @@ public final class Bootstrap {
         }
 
         try {
+            // 接受外界的执行参数。
             String command = "start";
             if (args.length > 0) {
                 command = args[args.length - 1];
@@ -463,7 +480,11 @@ public final class Bootstrap {
 
             if (command.equals("startd")) {
                 args[args.length - 1] = "start";
+                // org.apache.catalina.startup.Catalina.load(java.lang.String[])
+                // 依次的初始化 server-service-Engine-......
                 daemon.load(args);
+                // org.apache.catalina.startup.Catalina.start
+                // 依次的启动 server-service-Engine-......
                 daemon.start();
             } else if (command.equals("stopd")) {
                 args[args.length - 1] = "stop";

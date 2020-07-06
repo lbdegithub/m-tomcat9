@@ -274,6 +274,7 @@ public class Catalina {
 
 
     /**
+     * 创建并配置我们将用于启动的Digester 用于解析server.xml
      * Create and configure the Digester we will be using for startup.
      * @return the main digester to parse server.xml
      */
@@ -300,6 +301,7 @@ public class Catalina {
         digester.setUseContextClassLoader(true);
 
         // Configure the actions we will be using
+        // 解析过程中创建server
         digester.addObjectCreate("Server",
                                  "org.apache.catalina.core.StandardServer",
                                  "className");
@@ -553,16 +555,20 @@ public class Catalina {
 
         // Set configuration source
         ConfigFileLoader.setSource(new CatalinaBaseConfigurationSource(Bootstrap.getCatalinaBaseFile(), getConfigFile()));
+        // 加载 server.xml
         File file = configFile();
 
         // Create and execute our Digester
+        //获取解析server.xml的Digester
         Digester digester = createStartDigester();
 
         try (ConfigurationSource.Resource resource = ConfigFileLoader.getSource().getServerXml()) {
             InputStream inputStream = resource.getInputStream();
             InputSource inputSource = new InputSource(resource.getURI().toURL().toString());
             inputSource.setByteStream(inputStream);
+            // 利用arraylist定义的一个栈 先进后出
             digester.push(this);
+            // 解析 并创建server和其他的组件
             digester.parse(inputSource);
         } catch (Exception e) {
             log.warn(sm.getString("catalina.configFail", file.getAbsolutePath()), e);
@@ -581,6 +587,8 @@ public class Catalina {
 
         // Start the new server
         try {
+            // 初始化 server
+            // see  org.apache.catalina.core.StandardServer.initInternal
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {

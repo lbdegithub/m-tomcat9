@@ -77,6 +77,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
 
 
     /**
+     * 构造配置
      * Construct a default instance of this class.
      */
     public StandardServer() {
@@ -998,6 +999,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
     }
 
     /**
+     * 初始化server 并向下初始化
      * Invoke a pre-startup initialization. This is used to allow connectors
      * to bind to restricted ports under Unix operating environments.
      */
@@ -1007,7 +1009,9 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         super.initInternal();
 
         // Initialize utility executor
+        // 初始化 ScheduledThreadPoolExecutor utilityExecutor （默认使用2个线程大小的线程池）
         reconfigureUtilityExecutor(getUtilityThreadsInternal(utilityThreads));
+        // 注册Mbean
         register(utilityExecutor, "type=UtilityExecutor");
 
         // Register global String cache
@@ -1030,6 +1034,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
             ClassLoader cl = getCatalina().getParentClassLoader();
             // Walk the class loader hierarchy. Stop at the system class loader.
             // This will add the shared (if present) and common class loaders
+            // class load 向上遍历
             while (cl != null && cl != ClassLoader.getSystemClassLoader()) {
                 if (cl instanceof URLClassLoader) {
                     URL[] urls = ((URLClassLoader) cl).getURLs();
@@ -1039,6 +1044,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
                                 File f = new File (url.toURI());
                                 if (f.isFile() &&
                                         f.getName().endsWith(".jar")) {
+                                    //检查给定的系统JAR文件是否包含MANIFEST，并将其添加到容器的清单资源中
                                     ExtensionValidator.addSystemResource(f);
                                 }
                             } catch (URISyntaxException e) {
@@ -1054,6 +1060,8 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
         }
         // Initialize our defined Services
         for (Service service : services) {
+            // 初始化 service
+            // org.apache.catalina.startup.Catalina.createStartDigester 解析server.xml时候创建的
             service.init();
         }
     }

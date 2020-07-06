@@ -280,6 +280,7 @@ public final class Globals {
     /**
      * Name of the system property containing
      * the tomcat instance installation path
+     * tomcat实例安装路径的系统属性名称
      */
     public static final String CATALINA_BASE_PROP = "catalina.base";
 

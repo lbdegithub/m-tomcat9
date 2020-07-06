@@ -1005,6 +1005,7 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         // Initialize adapter
+        // LB-TODO
         adapter = new CoyoteAdapter(this);
         protocolHandler.setAdapter(adapter);
         if (service != null) {
